@@ -10,35 +10,38 @@ class Server {
         const { isShowLoading } = options;
 
         isShowLoading && loader.showLoader();
-        const withComplete = (...fns) => {
-            return (res) => {
-                isShowLoading && loader.hideLoader();
-                const result = fns.reduce((prev, fn) => fn(prev) || prev, res);
-
-                if (process.env.NODE_ENV === 'development') {
-                    console.log('%crequest%c ' + url + ' %cresult:', 'border-radius:2px;padding:0 2px;background:blue;color:#fff', 'background:rgb(220, 242, 253);color: rgb(97, 140, 160)', 'background-color: rgb(220, 242, 253); color: rgb(97, 140, 160);', result);
-                }
-            };
+        const complete = (result) => {
+            isShowLoading && loader.hideLoader();
+            if (process.env.NODE_ENV === 'development') {
+                console.log('%crequest%c ' + url + ' %cresult:', 'border-radius:2px;padding:0 2px;background:blue;color:#fff', 'background:rgb(220, 242, 253);color: rgb(97, 140, 160)', 'background-color: rgb(220, 242, 253); color: rgb(97, 140, 160);', result);
+            }
         };
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-
-            const success = withComplete(resolve);
-            const error = withComplete((e) => {
-                if (e.target.status === 422) {
-                    return {
+            const success = (res) => {
+                complete(res);
+                if (res.success) {
+                    resolve(res);
+                } else {
+                    reject(res);
+                }
+            };
+            const error = (e) => {
+                const err = e.target.status === 422
+                    ? {
                         success: false,
                         code: -140,
                         message: '参数错误!'
+                    }
+                    : {
+                        success: false,
+                        code: e.target.status,
+                        message: '网络错误!'
                     };
-                }
-                return {
-                    success: false,
-                    code: e.target.status,
-                    message: '网络错误!'
-                };
-            }, reject);
+                complete(err);
+                reject(err);
+            };
 
             xhr.addEventListener('load', () => {
                 if (xhr.status === 200) {
@@ -47,6 +50,7 @@ class Server {
                     error({ type: 'error', target: xhr });
                 }
             });
+
             xhr.addEventListener('error', (e) => {
                 if (xhr.status === 0) {
                     // 网络被页面跳转中断时等待600ms
