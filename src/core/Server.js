@@ -2,8 +2,8 @@ import { util } from "snowball";
 import { loader } from "snowball/widget";
 
 class Server {
-    constructor({ baseUri }) {
-        this.baseUri = baseUri;
+    constructor({ baseUrl }) {
+        this.baseUrl = baseUrl;
     }
 
     post(url, payload, options = {}) {
@@ -62,7 +62,7 @@ class Server {
                 }
             });
 
-            xhr.open("POST", util.joinPath(this.baseUri, url), true);
+            xhr.open("POST", util.joinPath(this.baseUrl, url), true);
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
             xhr.withCredentials = true;
 
