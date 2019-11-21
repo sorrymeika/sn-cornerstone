@@ -1,12 +1,13 @@
 import { Server } from "./core/Server";
 import { Sfs } from "./core/Sfs";
-import SFSImageUpload from "./components/SFSImageUpload";
+import SFSImageUpload, { SFSImageUploadFormItem } from "./components/SFSImageUpload";
 
 
 window.Cornerstone = {
     Server,
     Sfs,
-    SFSImageUpload
+    SFSImageUpload,
+    SFSImageUploadFormItem
 };
 
-export { Server, SFSImageUpload, Sfs };
+export { Server, SFSImageUpload, SFSImageUploadFormItem, Sfs };
