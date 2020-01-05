@@ -1,8 +1,11 @@
 import { util } from "snowball";
 import { loader } from "snowball/widget";
+import { Service } from "snowball/app";
 
-class Server {
+class Server extends Service {
     constructor({ baseUrl }) {
+        super();
+
         this.baseUrl = baseUrl;
     }
 
