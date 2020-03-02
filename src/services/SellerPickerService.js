@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Service, autowired } from 'snowball/app';
 import SellerPicker from '../components/SellerPicker';
 import { observable } from 'snowball';
-import { Server } from '../core/Server';
+import SellerService from './SellerService';
 
 class NoSellerError extends Error {
     code = "NoSeller"
@@ -16,7 +16,7 @@ export default class SellerPickerService extends Service {
     sellers = [];
 
     @autowired
-    _sellerServer: Server;
+    _sellerService: SellerService;
 
     constructor() {
         super();
@@ -47,7 +47,7 @@ export default class SellerPickerService extends Service {
             this.close();
         });
 
-        this._sellerServer.post('/admin/seller/getMySellers')
+        this._sellerService.getMySellers()
             .then((res) => {
                 this.sellers = res.data;
                 if (this.sellers.length === 0) {

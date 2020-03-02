@@ -1,8 +1,11 @@
-import { Service } from "snowball/app";
+import { Service, autowired } from "snowball/app";
 
 class SearchService extends Service {
+    @autowired
+    _tradeServer;
+
     searchByFormula(formulaId, pageIndex, pageSize) {
-        return this.app.server.trade.post('/search/searchByFormula', {
+        return this._tradeServer.post('/search/searchByFormula', {
             formulaId,
             pageIndex,
             pageSize
